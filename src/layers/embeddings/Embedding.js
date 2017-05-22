@@ -1,6 +1,6 @@
-import Layer from '../../Layer';
-import Tensor from '../../Tensor';
-import ops from 'ndarray-ops';
+import Layer from '../../Layer'
+import Tensor from '../../Tensor'
+import ops from 'ndarray-ops'
 
 /**
  * Embedding layer class
@@ -10,23 +10,20 @@ export default class Embedding extends Layer {
    * Creates a Embedding layer
    */
   constructor(attrs = {}) {
-    super(attrs);
-    this.layerClass = 'Embedding';
+    super(attrs)
+    this.layerClass = 'Embedding'
 
-    const { inputDim = 1, outputDim = 1, inputLength = 0, maskZero = false, dropout = 0 } = attrs;
+    const { input_dim = 1, output_dim = 1, input_length = 0, mask_zero = false } = attrs
 
-    this.inputDim = inputDim;
-    this.outputDim = outputDim;
-    this.inputLength = inputLength;
+    this.inputDim = input_dim
+    this.outputDim = output_dim
+    this.inputLength = input_length
 
-    // maskZero will be important for subsequence layers
-    this.maskZero = maskZero;
-
-    // relevant only during training phase
-    this.dropout = dropout;
+    // mask_zero will be important for subsequent layers
+    this.maskZero = mask_zero
 
     // Layer weights specification
-    this.params = ['W'];
+    this.params = ['embeddings']
   }
 
   /**
@@ -35,13 +32,13 @@ export default class Embedding extends Layer {
    * @returns {Tensor} x
    */
   call(x) {
-    let y = new Tensor([], [x.tensor.shape[0], this.weights.W.tensor.shape[1]]);
+    let y = new Tensor([], [x.tensor.shape[0], this.weights['embeddings'].tensor.shape[1]])
 
     for (let i = 0, len = x.tensor.shape[0]; i < len; i++) {
-      ops.assign(y.tensor.pick(i, null), this.weights.W.tensor.pick(x.tensor.get(i), null));
+      ops.assign(y.tensor.pick(i, null), this.weights['embeddings'].tensor.pick(x.tensor.get(i), null))
     }
 
-    x.tensor = y.tensor;
-    return x;
+    x.tensor = y.tensor
+    return x
   }
 }

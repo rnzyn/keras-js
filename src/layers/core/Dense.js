@@ -1,8 +1,8 @@
-import * as activations from '../../activations';
-import Tensor from '../../Tensor';
-import Layer from '../../Layer';
-import { gemv } from 'ndarray-blas-level2';
-import ops from 'ndarray-ops';
+import * as activations from '../../activations'
+import Tensor from '../../Tensor'
+import Layer from '../../Layer'
+import { gemv } from 'ndarray-blas-level2'
+import ops from 'ndarray-ops'
 
 /**
  * Dense layer class
@@ -10,33 +10,33 @@ import ops from 'ndarray-ops';
 export default class Dense extends Layer {
   /**
    * Creates a Dense layer
-   * @param {number} attrs.outputDim - output dimension size
+   * @param {number} attrs.units - output dimension size
    * @param {Object} [attrs] - layer attributes
    */
   constructor(attrs = {}) {
-    super(attrs);
-    this.layerClass = 'Dense';
+    super(attrs)
+    this.layerClass = 'Dense'
 
-    const { outputDim = 1, activation = 'linear', inputDim = null, bias = true } = attrs;
+    const { units = 1, activation = 'linear', input_dim = null, use_bias = true } = attrs
 
-    this.activation = activation;
-    this.activationFunc = activations[activation];
-    this.outputDim = outputDim;
-    this.inputDim = inputDim;
-    this.bias = bias;
+    this.activation = activation
+    this.activationFunc = activations[activation]
+    this.units = units
+    this.inputDim = input_dim
+    this.use_bias = use_bias
 
     // Layer weights specification
-    this.params = this.bias ? ['W', 'b'] : ['W'];
+    this.params = this.use_bias ? ['kernel', 'bias'] : ['kernel']
 
     // Input shape specification
     if (this.inputDim) {
-      this.inputShape = [this.inputDim];
+      this.inputShape = [this.inputDim]
     }
 
     // Enable layer gpu +/- pipeline mode if supported
     if (this.gpu && weblas) {
-      this._useWeblas = true;
-      this._pipelineEnabled = false;
+      this._useWeblas = true
+      this._pipelineEnabled = false
     }
   }
 
@@ -45,18 +45,18 @@ export default class Dense extends Layer {
    * @param {Tensor[]} weightsArr - array of weights which are instances of Tensor
    */
   setWeights(weightsArr) {
-    super.setWeights(weightsArr);
+    super.setWeights(weightsArr)
 
     if (this._useWeblas) {
-      this.weights.W.createWeblasTensor();
-      if (!this.weights.W._gpuMaxSizeExceeded) {
-        this.weights.W.weblasTensor = this.weights.W.weblasTensor.transpose();
+      this.weights['kernel'].createWeblasTensor()
+      if (!this.weights['kernel']._gpuMaxSizeExceeded) {
+        this.weights['kernel'].weblasTensor = this.weights['kernel'].weblasTensor.transpose()
       }
-      if (this.bias) {
-        this.weights.b.createWeblasTensor();
+      if (this.use_bias) {
+        this.weights['bias'].createWeblasTensor()
       } else {
-        this._zerosVec = new Tensor([], [this.weights.W.tensor.shape[1]]);
-        this._zerosVec.createWeblasTensor();
+        this._zerosVec = new Tensor([], [this.weights['kernel'].tensor.shape[1]])
+        this._zerosVec.createWeblasTensor()
       }
     }
   }
@@ -77,25 +77,25 @@ export default class Dense extends Layer {
    * @returns {Tensor} x
    */
   call(x) {
-    let y = new Tensor([], [this.outputDim]);
+    let y = new Tensor([], [this.units])
 
     if (this._useWeblas) {
-      x.createWeblasTensor();
+      x.createWeblasTensor()
     }
 
-    if (this._useWeblas && !(x._gpuMaxSizeExceeded || this.weights.W._gpuMaxSizeExceeded)) {
-      const bias = this.bias ? this.weights.b.weblasTensor : this._zerosVec.weblasTensor;
-      y.tensor.data = weblas.pipeline.sgemm(1, x.weblasTensor, this.weights.W.weblasTensor, 1, bias).transfer();
+    if (this._useWeblas && !(x._gpuMaxSizeExceeded || this.weights['kernel']._gpuMaxSizeExceeded)) {
+      const bias = this.use_bias ? this.weights['bias'].weblasTensor : this._zerosVec.weblasTensor
+      y.tensor.data = weblas.pipeline.sgemm(1, x.weblasTensor, this.weights['kernel'].weblasTensor, 1, bias).transfer()
     } else {
-      if (this.bias) {
-        ops.assign(y.tensor, this.weights.b.tensor);
+      if (this.use_bias) {
+        ops.assign(y.tensor, this.weights['bias'].tensor)
       }
-      gemv(1, this.weights.W.tensor.transpose(1, 0), x.tensor, 1, y.tensor);
+      gemv(1, this.weights['kernel'].tensor.transpose(1, 0), x.tensor, 1, y.tensor)
     }
-    x.tensor = y.tensor;
+    x.tensor = y.tensor
 
-    this.activationFunc(x);
+    this.activationFunc(x)
 
-    return x;
+    return x
   }
 }

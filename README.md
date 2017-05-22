@@ -2,9 +2,13 @@
 
 Run [Keras](https://github.com/fchollet/keras) models (trained using Tensorflow backend) in your browser, with GPU support. Models are created directly from the Keras JSON-format configuration file, using weights serialized directly from the corresponding HDF5 file. Also works in node, but only in CPU mode.
 
-Inspiration is drawn from a number of deep learning / neural network libraries for JavaScript and the browser, including [Tensorflow Playground](http://playground.tensorflow.org/), [ConvNetJS](https://github.com/karpathy/convnetjs), [synaptic](https://github.com/cazala/synaptic), [brain](https://github.com/harthur/brain), [CaffeJS](https://github.com/chaosmail/caffejs), [MXNetJS](https://github.com/dmlc/mxnet.js). However, the focus of this library is on inference only.
+Currently the focus of this library is on forward-pass inference only.
 
 Tensor operations are extended on top of the [ndarray](https://github.com/scijs/ndarray) library. GPU support is powered by WebGL through [weblas](https://github.com/waylonflinn/weblas).
+
+Library version compatibility:
+- Keras 2.0.4
+- TensorFlow 1.1.0
 
 ### [Interactive Demos](https://transcranial.github.io/keras-js)
 
@@ -19,13 +23,15 @@ Tensor operations are extended on top of the [ndarray](https://github.com/scijs/
 
 - Convolutional Variational Autoencoder, trained on MNIST
 
+- Auxiliary Classifier Generative Adversarial Networks (AC-GAN) on MNIST
+
 - 50-layer Residual Network, trained on ImageNet
 
-- Inception V3, trained on ImageNet
+- Inception v3, trained on ImageNet
+
+- SqueezeNet v1.1, trained on ImageNet
 
 - Bidirectional LSTM for IMDB sentiment classification
-
-*planned*: Char-RNN, SqueezeNet
 
 ### Usage
 
@@ -146,20 +152,17 @@ See `demos/src/` for source code of real examples written in VueJS.
       }
 
       // make predictions
+      return model.predict(inputData)
+    })
+    .then(outputData => {
       // outputData is an object keyed by names of the output layers
       // or `output` for Sequential models
-      model.predict(inputData)
-        .then(outputData => {
-          // e.g.,
-          // outputData['fc1000']
-        })
-        .catch(err => {
-          // handle error
-        }
+      // e.g.,
+      // outputData['fc1000']
     })
     .catch(err => {
       // handle error
-    }
+    })
   ```
 
   Alternatively, we could also use async/await:
@@ -178,35 +181,33 @@ See `demos/src/` for source code of real examples written in VueJS.
 
 ### Available layers
 
-  - *advanced activations*: LeakyReLU, PReLU, ELU, ParametricSoftplus, ThresholdedReLU, SReLU
+  - *core*: Dense, Activation, Dropout, SpatialDropout1D, SpatialDropout2D, SpatialDropout3D, Flatten, Reshape, Permute, RepeatVector
 
-  - *convolutional*: Convolution1D, Convolution2D, AtrousConvolution2D, SeparableConvolution2D, Deconvolution2D, Convolution3D, UpSampling1D, UpSampling2D, UpSampling3D, ZeroPadding1D, ZeroPadding2D, ZeroPadding3D, Cropping1D, Cropping2D, Cropping3D
+  - *convolutional*: Conv1D, Conv2D, SeparableConv2D, Conv2DTranspose, Conv3D, Cropping1D, Cropping2D, Cropping3D, UpSampling1D, UpSampling2D, UpSampling3D, ZeroPadding1D, ZeroPadding2D, ZeroPadding3D
 
-  - *core*: Dense, Activation, Dropout, SpatialDropout2D, SpatialDropout3D, Flatten, Reshape, Permute, RepeatVector, Merge, Highway, MaxoutDense
-
-  - *embeddings*: Embedding
-
-  - *noise*: GaussianNoise, GaussianDropout
-
-  - *normalization*: BatchNormalization
-
-  - *pooling*: MaxPooling1D, MaxPooling2D, MaxPooling3D, AveragePooling1D, AveragePooling2D, AveragePooling3D, GlobalMaxPooling1D, GlobalAveragePooling1D, GlobalMaxPooling2D, GlobalAveragePooling2D
+  - *pooling*: MaxPooling1D, MaxPooling2D, MaxPooling3D, AveragePooling1D, AveragePooling2D, AveragePooling3D, GlobalMaxPooling1D, GlobalMaxPooling2D, GlobalMaxPooling3D, GlobalAveragePooling1D, GlobalAveragePooling2D, GlobalAveragePooling3D
 
   - *recurrent*: SimpleRNN, LSTM, GRU
 
+  - *embeddings*: Embedding
+
+  - *merge*: Add, Multiply, Average, Maximum, Concatenate, Dot
+
+  - *advanced activations*: LeakyReLU, PReLU, ELU, ThresholdedReLU
+
+  - *normalization*: BatchNormalization
+
+  - *noise*: GaussianNoise, GaussianDropout
+
   - *wrappers*: Bidirectional, TimeDistributed
+
+  - *legacy*: Merge, MaxoutDense, Highway
 
 ### Layers to be implemented
 
-  Note: Lambda layers cannot be implemented directly at this point, but will eventually create a mechanism for defining computational logic through JavaScript.
-
   - *core*: Lambda
 
-  - *convolutional*: AtrousConvolution1D
-
-  - *locally-connected*: LocallyConnected1D, LocallyConnected2D
-
-  - *pooling*: GlobalMaxPooling3D, GlobalAveragePooling3D
+  - *local*: LocallyConnected1D, LocallyConnected2D
 
 ### Notes
 
@@ -222,15 +223,12 @@ Firefox on certain platforms (macOS in particular, possibly others) still has te
 
 ### Development / Testing
 
-This repo has large assets and will [max out Github's data quota](https://github.com/transcranial/keras-js/issues/54). You can either purchase data packs, or ignore the larger files. To ignore those larger files, use this command to clone the repo:
-```sh
-GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/transcranial/keras-js.git
-```
-
 There are extensive tests for each implemented layer. See `notebooks/` for jupyter notebooks generating the data for all these tests.
 
 ```sh
 $ npm install
+# or
+$ yarn
 ```
 
 To run all tests run `npm run server` and simply go to [http://localhost:3000/test/](http://localhost:3000/test/). All tests will automatically run. Open up your browser devtools for additional test data info.
@@ -249,7 +247,7 @@ To create a production UMD webpack build, output to `dist/keras.js`:
 $ npm run build:browser
 ```
 
-Data files for the demos are located at `demos/data/`. All binary `*.buf` files uses [Git LFS](https://git-lfs.github.com/) (see `.gitattributes`).
+Data files for the demos are located at `demos/data/`. Due to its large size, this folder is ignored by git. Clone the [keras-js-demos-data](https://github.com/transcranial/keras-js-demos-data) repo and copy the contents to `demos/data/`.
 
 ### License
 

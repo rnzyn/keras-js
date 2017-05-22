@@ -1,6 +1,6 @@
-import Layer from '../../Layer';
-import Tensor from '../../Tensor';
-import ops from 'ndarray-ops';
+import Layer from '../../Layer'
+import Tensor from '../../Tensor'
+import ops from 'ndarray-ops'
 
 /**
  * GlobalMaxPooling2D layer class
@@ -10,11 +10,11 @@ export default class GlobalMaxPooling2D extends Layer {
    * Creates a GlobalMaxPooling2D layer
    */
   constructor(attrs = {}) {
-    super(attrs);
-    this.layerClass = 'GlobalMaxPooling2D';
+    super(attrs)
+    this.layerClass = 'GlobalMaxPooling2D'
 
-    const { dimOrdering = 'tf' } = attrs;
-    this.dimOrdering = dimOrdering;
+    const { data_format = 'channels_last' } = attrs
+    this.dataFormat = data_format
   }
 
   /**
@@ -23,17 +23,17 @@ export default class GlobalMaxPooling2D extends Layer {
    * @returns {Tensor} x
    */
   call(x) {
-    // convert to tf ordering
-    if (this.dimOrdering === 'th') {
-      x.tensor = x.tensor.transpose(1, 2, 0);
+    // convert to channels_last ordering
+    if (this.dataFormat === 'channels_first') {
+      x.tensor = x.tensor.transpose(1, 2, 0)
     }
 
-    const channels = x.tensor.shape[2];
-    let y = new Tensor([], [channels]);
+    const channels = x.tensor.shape[2]
+    let y = new Tensor([], [channels])
     for (let i = 0, len = channels; i < len; i++) {
-      y.tensor.set(i, ops.sup(x.tensor.pick(null, null, i)));
+      y.tensor.set(i, ops.sup(x.tensor.pick(null, null, i)))
     }
-    x.tensor = y.tensor;
-    return x;
+    x.tensor = y.tensor
+    return x
   }
 }

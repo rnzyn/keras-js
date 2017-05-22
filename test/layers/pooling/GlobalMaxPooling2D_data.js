@@ -2,10 +2,11 @@
 // Keyed by mocha test ID
 // Python code for generating test data can be found in the matching jupyter notebook in folder `notebooks/`.
 
-(function() {
+;(function() {
   var DATA = {
     'pooling.GlobalMaxPooling2D.0': {
       input: {
+        shape: [6, 6, 3],
         data: [
           0.38825,
           0.616859,
@@ -115,13 +116,13 @@
           -0.858829,
           -0.005027,
           0.268902
-        ],
-        shape: [6, 6, 3]
+        ]
       },
-      expected: { data: [0.938555, 0.924136, 0.987815], shape: [3] }
+      expected: { shape: [3], data: [0.938555, 0.924136, 0.987815] }
     },
     'pooling.GlobalMaxPooling2D.1': {
       input: {
+        shape: [3, 6, 6],
         data: [
           0.277769,
           -0.324717,
@@ -231,13 +232,13 @@
           -0.493389,
           -0.979736,
           0.698471
-        ],
-        shape: [3, 6, 6]
+        ]
       },
-      expected: { data: [0.987411, 0.78529, 0.90223], shape: [3] }
+      expected: { shape: [3], data: [0.987411, 0.78529, 0.90223] }
     },
     'pooling.GlobalMaxPooling2D.2': {
       input: {
+        shape: [5, 3, 2],
         data: [
           -0.504559,
           0.757141,
@@ -269,12 +270,11 @@
           0.522851,
           -0.896798,
           -0.850198
-        ],
-        shape: [5, 3, 2]
+        ]
       },
-      expected: { data: [0.942285, 0.757141], shape: [2] }
+      expected: { shape: [2], data: [0.942285, 0.757141] }
     }
-  };
+  }
 
-  window.TEST_DATA = Object.assign({}, window.TEST_DATA, DATA);
-})();
+  window.TEST_DATA = Object.assign({}, window.TEST_DATA, DATA)
+})()

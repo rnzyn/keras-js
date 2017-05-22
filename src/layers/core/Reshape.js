@@ -1,5 +1,5 @@
-import Tensor from '../../Tensor';
-import Layer from '../../Layer';
+import Tensor from '../../Tensor'
+import Layer from '../../Layer'
 
 /**
  * Reshape layer class
@@ -8,14 +8,14 @@ import Layer from '../../Layer';
 export default class Reshape extends Layer {
   /**
    * Creates a Reshape layer
-   * @param {number[]} attrs.targetShape
+   * @param {number[]} attrs.target_shape
    */
   constructor(attrs = {}) {
-    super(attrs);
-    this.layerClass = 'Reshape';
+    super(attrs)
+    this.layerClass = 'Reshape'
 
-    const { targetShape = [] } = attrs;
-    this.targetShape = targetShape;
+    const { target_shape = [] } = attrs
+    this.targetShape = target_shape
   }
 
   /**
@@ -25,11 +25,11 @@ export default class Reshape extends Layer {
    */
   call(x) {
     if (this.targetShape.reduce((a, b) => a * b, 1) !== x.tensor.size) {
-      throw new Error(`${this.name} [Reshape layer] The total size of new array must be unchanged in reshape layer.`);
+      throw new Error(`${this.name} [Reshape layer] The total size of new array must be unchanged in reshape layer.`)
     }
-    let reshaped = new Tensor([], this.targetShape);
-    reshaped.replaceTensorData(x.tensor.data);
-    x.tensor = reshaped.tensor;
-    return x;
+    let reshaped = new Tensor([], this.targetShape)
+    reshaped.replaceTensorData(x.tensor.data)
+    x.tensor = reshaped.tensor
+    return x
   }
 }

@@ -41,26 +41,22 @@
   <script src="layers/core/Permute_data.js"></script>
   <script src="layers/core/RepeatVector.js"></script>
   <script src="layers/core/RepeatVector_data.js"></script>
-  <script src="layers/core/Merge.js"></script>
-  <script src="layers/core/Merge_data.js"></script>
-  <script src="layers/core/Highway.js"></script>
-  <script src="layers/core/Highway_data.js"></script>
-  <script src="layers/core/MaxoutDense.js"></script>
-  <script src="layers/core/MaxoutDense_data.js"></script>
+
+  <!-- merge -->
+  <script src="layers/merge.js"></script>
+  <script src="layers/merge_data.js"></script>
 
   <!-- convolutional -->
-  <script src="layers/convolutional/Convolution1D.js"></script>
-  <script src="layers/convolutional/Convolution1D_data.js"></script>
-  <script src="layers/convolutional/Convolution2D.js"></script>
-  <script src="layers/convolutional/Convolution2D_data.js"></script>
-  <script src="layers/convolutional/AtrousConvolution2D.js"></script>
-  <script src="layers/convolutional/AtrousConvolution2D_data.js"></script>
-  <script src="layers/convolutional/SeparableConvolution2D.js"></script>
-  <script src="layers/convolutional/SeparableConvolution2D_data.js"></script>
-  <script src="layers/convolutional/Deconvolution2D.js"></script>
-  <script src="layers/convolutional/Deconvolution2D_data.js"></script>
-  <script src="layers/convolutional/Convolution3D.js"></script>
-  <script src="layers/convolutional/Convolution3D_data.js"></script>
+  <script src="layers/convolutional/Conv1D.js"></script>
+  <script src="layers/convolutional/Conv1D_data.js"></script>
+  <script src="layers/convolutional/Conv2D.js"></script>
+  <script src="layers/convolutional/Conv2D_data.js"></script>
+  <script src="layers/convolutional/SeparableConv2D.js"></script>
+  <script src="layers/convolutional/SeparableConv2D_data.js"></script>
+  <script src="layers/convolutional/Conv2DTranspose.js"></script>
+  <script src="layers/convolutional/Conv2DTranspose_data.js"></script>
+  <script src="layers/convolutional/Conv3D.js"></script>
+  <script src="layers/convolutional/Conv3D_data.js"></script>
   <script src="layers/convolutional/UpSampling1D.js"></script>
   <script src="layers/convolutional/UpSampling1D_data.js"></script>
   <script src="layers/convolutional/UpSampling2D.js"></script>
@@ -95,12 +91,16 @@
   <script src="layers/pooling/AveragePooling3D_data.js"></script>
   <script src="layers/pooling/GlobalMaxPooling1D.js"></script>
   <script src="layers/pooling/GlobalMaxPooling1D_data.js"></script>
-  <script src="layers/pooling/GlobalAveragePooling1D.js"></script>
-  <script src="layers/pooling/GlobalAveragePooling1D_data.js"></script>
   <script src="layers/pooling/GlobalMaxPooling2D.js"></script>
   <script src="layers/pooling/GlobalMaxPooling2D_data.js"></script>
+  <script src="layers/pooling/GlobalMaxPooling3D.js"></script>
+  <script src="layers/pooling/GlobalMaxPooling3D_data.js"></script>
+  <script src="layers/pooling/GlobalAveragePooling1D.js"></script>
+  <script src="layers/pooling/GlobalAveragePooling1D_data.js"></script>
   <script src="layers/pooling/GlobalAveragePooling2D.js"></script>
   <script src="layers/pooling/GlobalAveragePooling2D_data.js"></script>
+  <script src="layers/pooling/GlobalAveragePooling3D.js"></script>
+  <script src="layers/pooling/GlobalAveragePooling3D_data.js"></script>
 
   <!-- normalization -->
   <script src="layers/normalization/BatchNormalization.js"></script>
@@ -111,8 +111,10 @@
   <script src="layers/embeddings/Embedding_data.js"></script>
 
   <!-- noise -->
-  <script src="layers/noise/Noise.js"></script>
-  <script src="layers/noise/Noise_data.js"></script>
+  <script src="layers/noise/GaussianDropout.js"></script>
+  <script src="layers/noise/GaussianDropout_data.js"></script>
+  <script src="layers/noise/GaussianNoise.js"></script>
+  <script src="layers/noise/GaussianNoise_data.js"></script>
 
   <!-- recurrent -->
   <script src="layers/recurrent/SimpleRNN.js"></script>
@@ -127,6 +129,14 @@
   <script src="layers/wrappers/TimeDistributed_data.js"></script>
   <script src="layers/wrappers/Bidirectional.js"></script>
   <script src="layers/wrappers/Bidirectional_data.js"></script>
+
+  <!-- legacy -->
+  <script src="layers/legacy/Merge.js"></script>
+  <script src="layers/legacy/Merge_data.js"></script>
+  <script src="layers/legacy/MaxoutDense.js"></script>
+  <script src="layers/legacy/MaxoutDense_data.js"></script>
+  <script src="layers/legacy/Highway.js"></script>
+  <script src="layers/legacy/Highway_data.js"></script>
 
   <!-- ///////////////////////// PIPELINE ///////////////////////// -->
 
@@ -173,8 +183,8 @@
 
 <script>
 // mocha.checkLeaks();
-mocha.globals(['jQuery']);
-mocha.run();
+mocha.globals(['jQuery'])
+mocha.run()
 </script>
 </body>
 </html>
